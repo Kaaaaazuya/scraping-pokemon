@@ -8,6 +8,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/gocolly/colly/v2"
 )
@@ -22,6 +23,13 @@ func main() {
 	// Colly collector を作成
 	c := colly.NewCollector()
 
+	// 1秒の間隔でクロール
+	c.Limit(&colly.LimitRule{
+		DomainGlob:  "*xn--rckteqa2e.com*",
+		Parallelism: 1,
+		Delay:       1 * time.Second,
+	})
+
 	// Pokemon のスライスを保存するための変数
 	var pokemons []Pokemon
 
@@ -31,7 +39,7 @@ func main() {
 			if len(cells) >= 8 {
 				no, err := strconv.Atoi(strings.TrimSpace(cells[0]))
 				if err != nil {
-					fmt.Print("error")
+					fmt.Printf("error: %s\n", cells)
 					return
 				}
 				jpName := strings.TrimSpace(cells[1])
